@@ -1,6 +1,8 @@
 
+using CustomersApi.Dba;
 using CustomersApi.Interfaces;
 using CustomersApi.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace CustomersApi
 {
@@ -16,9 +18,14 @@ namespace CustomersApi
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddSingleton<IAddCustomerService, AddCustomerService>();
-            builder.Services.AddSingleton<IUpdateCustomerService, UpdateCustomerService>();    
 
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddHttpClient<IAddCustomerService, AddCustomerService>();
+            builder.Services.AddHttpClient<IUpdateCustomerService, UpdateCustomerService>();
+
+           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
